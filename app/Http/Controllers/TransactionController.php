@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use App\Models\TRansactionDetail;
+use App\Models\TransactionDetail;
 
 class TransactionController extends Controller
 {
@@ -50,18 +50,23 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        //
+        $item = Transaction::with('details.product')//relasi details mengandung product
+                            ->findOrFail($id);
+        // dd('$item');
+        return view('pages.transaction.show')
+            ->with([
+            'item'=>$item
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit($id)
     {
-        //
+        $item = Transaction::findOrFail($id);
+        return view('pages.transaction.edit')->with([
+            'item'=> $item
+        ]
+        );
     }
 
     /**
@@ -73,7 +78,11 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();//ambil semua data
+       
+        $item = Transaction::findOrFail($id);
+        $item->update($data);
+        return redirect()->route('transaction.index');
     }
 
     /**
@@ -84,6 +93,21 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $item= Transaction::findOrFail($id);
+        
+        $item->delete();
+        return redirect()->route('transaction.index');
+    }
+
+    public function setStatus(Request $request,$id){
+        $request->validate([
+            'status'=>'required|in:PENDING,SUCCESS,FAILED'
+        ]);
+
+        $item = Transaction::findOrFail($id);
+        $item->transaction_status= $request->status;
+
+        $item->save();
+        return redirect()->route('transaction.index');
     }
 }

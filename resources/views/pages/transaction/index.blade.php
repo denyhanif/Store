@@ -11,9 +11,9 @@
                 </div>
                 <div class="div card-body--">
                     <div  class="table-stats order-table ov-h">
-                        <table class="table">
+                        <table class="table align-self-center">
                             <thead>
-                                <tr>
+                                <tr >
                                     <th>no</th>
                                     <th>Nama</th>
                                     <th>E-mail</th>
@@ -23,7 +23,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="text-center">
                                 @forelse ($items as $item)
                                 <tr>
                                     <td>{{$item->id}}</td>
@@ -31,22 +31,30 @@
                                     <td>{{$item->email}}</td>
                                     <td>{{$item->number}}</td>
                                     <td>{{$item->transaction_total}}</td>
-                                    <td>
+                                    <td >
                                         @if($item->transaction_status == 'PENDING')
                                         <span class="badge badge-info">
-                                        @elseif($item->transaction_status == 'SUCESS')
+                                        @elseif($item->transaction_status == 'SUCCESS')
                                         <span class="badge badge-success">
                                         @elseif($item->transaction_status == 'FAILED')
                                         <span class="badge badge-danger">
-                                            @else 
-                                            <span>
+                                        @else 
                                         @endif
                                             {{$item->transaction_status}}
                                         </span>
+
+                                        @if($item->transaction_status == 'PENDING')
+                                        <a href="{{ route('transactions.status', $item->id) }}?status=SUCCESS" class="btn btn-success btn-sm">
+                                          <i class="fa fa-check"></i>
+                                        </a>
+                                        <a href="{{ route('transactions.status', $item->id) }}?status=FAILED" class="btn btn-warning btn-sm">
+                                          <i class="fa fa-times"></i>
+                                        </a>
+                                      @endif
                                     </td>
                                     <td>
-                                        @if ($item->transaction_status =='PENDING')
-                                            {{--  <a href="{{route('transaction.status',$items->id)}}?status=SUCCESS" 
+                                        {{--  @if ($item->transaction_status =='PENDING')
+                                             <a href="{{route('transaction.status',$items->id)}}?status=SUCCESS" 
                                             class="btn btn-success btn-sm">
                                             <i class="fa fa-check"></i>
                                             </a>
@@ -55,19 +63,17 @@
                                             class="btn btn-success btn-sm">
                                             <i class="fa fa-times"></i>
                                             </a>
-                                              --}}
-                                        @endif
-                                        
+                                            
+                                        @endif  --}}
+                                       
                                         <a href="#mymodal"
-                                        data-remote="{{route('transaction.show',$item->id)}}"
-                                        data-togle="modal"
-                                        data-target="#mymodal"
-                                        data-title="Detail Transaksi {{$item->uuid}}"
-                                        class="btn btn-info btn-sm">
+                                            data-remote="{{ route('transaction.show', $item->id) }}"
+                                            data-toggle="modal"
+                                            data-target="#mymodal"
+                                            data-title="Detail Transaksi {{ $item->uuid }}"
+                                            class="btn btn-info btn-bg">
                                             <i class="fa fa-eye"></i>
                                         </a>
-
-
                                         <a href="{{route('transaction.edit',$item->id)}}" class="btn btn-primary sm">
                                             <i class="fa fa-pencil"></i>
                                         </a>
@@ -87,7 +93,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center p-5">
-                                            Foto tidak tersedia
+                                            Belum ada transaksi
                                         </td>
                                     </tr>
                                 @endforelse
