@@ -1,3 +1,4 @@
+ {{-- {{dd($items)}}  --}}
 @extends('layouts.default')
 
 @section('content')
@@ -6,39 +7,32 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="box-title">Daftar Barang</h4>
+                    <h4 class="box-title">Foto Produk</h4>
+                    <small>{{$product->name}}</small>
                 </div>
                 <div class="div card-body--">
                     <div  class="table-stats order-table ov-h">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>e</th>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
+                                    <th>no </th>
+                                    <th>Nama Barang</th>
+                                    <th>Foto</th>
+                                    <th>Default</th>
                                     <th>Action</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($item as $item)
+                                @forelse ($items as $item)
                                 <tr>
                                     <td>{{$item->id}}</td>
-                                    <td>{{$item->name}}</td>
-                                    <td>{{$item->type}}</td>
-                                    <td>{{$item->price}}</td>
-                                    <td>{{$item->quantity}}</td>
+                                    <td>{{$item->product->name}}</td>
                                     <td>
-
-                                        <a href="{{route('products.gallery',$item->id)}}" class="btn btn-info sm">
-                                            <i class="fa fa-picture-o"></i>
-                                        </a>
-                                        <a href="{{route('products.edit',$item->id)}}" class="btn btn-primary sm">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                        <form action="{{route('products.destroy',$item->id)}}" 
+                                        <img src="{{url($item->photo)}}" alt="">
+                                    </td>
+                                    <td>{{$item->is_default? 'YA':'TIDAK'}}</td>
+                                    <td>
+                                        <form action="{{route('product-galleries.destroy',$item->id)}}" 
                                             method="post" class="d-inline">
                                             @csrf
                                             @method('delete')
@@ -46,17 +40,15 @@
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
-
                                     </td>
                                 </tr>
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center p-5">
-                                            Data tidak tersedia
+                                            Foto tidak tersedia
                                         </td>
                                     </tr>
                                 @endforelse
-                              
                             </tbody>
                         </table>
                     </div>

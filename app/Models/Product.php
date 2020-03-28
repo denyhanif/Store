@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
     use softDeletes;
-     protected $filable = ['name','type','description','price','slug','quantity'];
+     protected $fillable = ['name','type','description','price','slug','quantity'];
     //fariabel yang tidak mau di munculkan
      protected $hidden = [];
     // realasi dengan tabel galeri
-    public function galleries(){
-        // return $this->hasMany(ProductGallery::clas,'product_id');
-    }
+     public function galleries(){
+    return $this->hasMany(ProductGallery::clas,'product_id');
+     }
 }

@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\ProductGallery;
+
+//use App\Http\productRequest;
+use Illuminate\Support\Str;
+use App\Http\Requests\ProductGalleryRequest;
+use App\Http\Requests\productRequest;
+use App\Http\Requests\produks;
+
+
 
 class ProductController extends Controller
 {
+
+
+       //agar hharus login dulu saat mebuka 
+   public function __construct()
+   {
+        $this->middleware('auth');
+   }
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +33,7 @@ class ProductController extends Controller
     {
         $items= Product::all();//memanggil semua product dengan model 
         return view('pages.products.index')->with([
-            'barang'=>$items// parsing data collection yang ada di$items ke variabel barang
+            'item'=>$items// parsing data collection yang ada di$items ke variabel barang
         ]
     );
     }
@@ -29,7 +45,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        
+        return view('pages.products.create');
     }
 
     /**
@@ -38,9 +55,14 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store( productRequest $request)
     {
-        //
+        //ambil semua request (isi forma yang akan di input)
+        $data = $request->all();//ambil semua data
+        $data['slug']= Str::slug($request->name);//slug untuk merapikan url agar nama produk di url terformat(spasi akan menjadi -)
+
+        Product::create($data);//menginputkan data ketabel produk dengan model product
+        return redirect()->route('products.index');//mengarahkan ke tampilan index/produk
     }
 
     /**
@@ -62,7 +84,11 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $item = Product::findOrFail($id);
+        return view('pages.products.edit')->with([
+            'item'=> $item
+        ]
+        );
     }
 
     /**
@@ -74,7 +100,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //ambil semua request (isi forma yang akan di input)
+        $data = $request->all();//ambil semua data
+        $data['slug']= Str::slug($request->name);//slug untuk merapikan url agar nama produk di url terformat(spasi akan menjadi -)
+
+        $item = Product::findOrFail($id);
+        $item->update($data);
+        return redirect()->route('products.index');//mengarahkan ke tampilan index/produk
     }
 
     /**
@@ -85,6 +117,22 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $item = Product::findOrFail($id);
+        $item->delete();
+        //addon
+        ProductGallery::where('products_id',$id)->delete();
+        
+        return redirect()->route('products.index');
+    }
+     // menampikan galery sesuai produk
+
+     public function gallery( Request $request, $id ){
+        $products = Product:: findOrFail($id);// menemukan data berdasarkan id
+        $items = ProductGallery::with('product')
+                ->where('products_id',$id)
+                ->get();//
+        
+        return view('pages.products.gallery')->with(['product'=>$products,'items'=>$items]);
+
     }
 }
