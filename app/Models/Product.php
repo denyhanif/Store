@@ -14,6 +14,6 @@ class Product extends Model
      protected $hidden = [];
     // realasi dengan tabel galeri
      public function galleries(){
-    return $this->hasMany(ProductGallery::clas,'product_id');
+    return $this->hasMany(ProductGallery::class,'products_id');
      }
 }

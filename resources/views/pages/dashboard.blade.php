@@ -62,9 +62,8 @@
                                         <th>Nama</th>
                                         <th>E-mail</th>
                                         <th>Nomor</th>
-                                        <th>Total Transaksi</th>
+                                        <th>Total</th>
                                         <th>Status</th>
-                                        th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-center">
